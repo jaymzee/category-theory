@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -16,13 +17,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 public class Clock extends JPanel {
-    public static final int cx = 200;
-    public static final int cy = 200;
-    public static final int r1 = 180;
-    public static final int r2 = 130;
+    public static final int WIDTH = 400;
+    public static final int HEIGHT = 400;
+    public static final int CX = WIDTH / 2;
+    public static final int CY = HEIGHT / 2;
+    public static final int R1 = (int)(0.9 * CX);
+    public static final int R2 = (int)(0.7 * CX);
 
     void drawClock(Graphics2D g) {
-        var cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
         int s = cal.get(Calendar.SECOND);
         int m = cal.get(Calendar.MINUTE);
         int h = cal.get(Calendar.HOUR);
@@ -30,17 +33,17 @@ public class Clock extends JPanel {
         double mm = 2 * Math.PI * m / 60.0;
         double hh = 2 * Math.PI * h / 12.0;
 
-        g.drawOval(5, 5, 390, 390);
+        g.drawOval(5, 5, WIDTH - 10, HEIGHT - 10);
         g.setColor(Color.RED);
-        g.drawLine(cx, cy,
-                cx + (int)(r1 * Math.sin(ss)), cy - (int)(r1 * Math.cos(ss)));
+        g.drawLine(CX, CY,
+                CX + (int)(R1 * Math.sin(ss)), CY - (int)(R1 * Math.cos(ss)));
         g.setColor(Color.BLACK);
         g.setStroke(new BasicStroke(2));
-        g.drawLine(cx, cy,
-                cx + (int)(r1 * Math.sin(mm)), cy - (int)(r1 * Math.cos(mm)));
+        g.drawLine(CX, CY,
+                CX + (int)(R1 * Math.sin(mm)), CY - (int)(R1 * Math.cos(mm)));
         g.setStroke(new BasicStroke(3));
-        g.drawLine(cx, cy,
-                cx + (int)(r2 * Math.sin(hh)), cy - (int)(r2 * Math.cos(hh)));
+        g.drawLine(CX, CY,
+                CX + (int)(R2 * Math.sin(hh)), CY - (int)(R2 * Math.cos(hh)));
     }
 
     @Override
@@ -50,25 +53,16 @@ public class Clock extends JPanel {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                var app = new JFrame("Line Drawing Demo");
-                app.setSize(400, 435);
-                app.add(new Clock(), BorderLayout.CENTER);
-                app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                app.setLocationRelativeTo(null);
-                app.setVisible(true);
-
-                var task1 = new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        app.repaint();
-                    }
-                };
-                new Timer(500, task1).start();
-                // new Timer(500, evt -> { app.repaint(); }).start();
-            }
+        SwingUtilities.invokeLater(() -> {
+            Date now = new Date();
+            String date = new SimpleDateFormat("MM/dd/YYYY").format(now);
+            JFrame app = new JFrame(date);
+            app.setSize(WIDTH, HEIGHT + 35);
+            app.add(new Clock(), BorderLayout.CENTER);
+            app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            app.setLocationRelativeTo(null);
+            app.setVisible(true);
+            new Timer(500, event -> app.repaint()).start();
         });
     }
 }
