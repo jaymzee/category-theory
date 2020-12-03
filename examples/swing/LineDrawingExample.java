@@ -1,23 +1,13 @@
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
- 
+import java.awt.BorderLayout;
+
+import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
- 
-/**
- * This program demonstrates how to draw lines using Graphics2D object.
- * @author www.codejava.net
- *
- */
-public class LineDrawingExample extends JFrame {
-    public LineDrawingExample() {
-        super("Lines Drawing Demo");
-        setSize(500, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-    }
 
+public class LineDrawingExample extends JPanel {
     void drawLines(Graphics g) {
         var g2d = (Graphics2D)g;
         g2d.drawLine(120, 50, 360, 50);
@@ -26,8 +16,8 @@ public class LineDrawingExample extends JFrame {
     }
 
     @Override
-    public void paint(Graphics g) {
-        super.paint(g);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         drawLines(g);
     }
 
@@ -35,7 +25,12 @@ public class LineDrawingExample extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new LineDrawingExample().setVisible(true);
+                var app = new JFrame("Line Drawing Demo");
+                app.setSize(500, 400);
+                app.add(new LineDrawingExample(), BorderLayout.CENTER);
+                app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                app.setLocationRelativeTo(null);
+                app.setVisible(true);
             }
         });
     }
